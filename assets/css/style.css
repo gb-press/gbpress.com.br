@@ -1,0 +1,642 @@
+/*
+ * GB Press — site estático
+ * Recriado a partir do tema WordPress "gbpress" (Dev2), sem Bootstrap nem jQuery.
+ */
+
+@font-face {
+    font-family: 'bebas_neueregular';
+    src: url('../fonts/bebasneue-regular-webfont.woff2') format('woff2'),
+         url('../fonts/bebasneue-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --white: #FFF;
+    --black: #000;
+    --gray: #666666;
+    --gray100: #EDEFF0;
+    --blue: #001744;
+    --red: #E50914;
+
+    --poppins: 'Poppins', sans-serif;
+    --bebas: 'bebas_neueregular', 'Bebas Neue', Impact, sans-serif;
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--poppins);
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: #212529;
+    background: var(--white);
+    overflow-x: hidden;
+}
+
+ul { list-style: none; }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.text-center { text-align: center; }
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* ---------- Grade (subconjunto do Bootstrap 4 usado pelo tema) ---------- */
+
+.container {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.align-items-center { align-items: center; }
+
+[class*="col-"] {
+    position: relative;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.col-2  { flex: 0 0 16.666667%; max-width: 16.666667%; }
+.col-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+.offset-2 { margin-left: 16.666667%; }
+
+@media (min-width: 576px) {
+    .container { max-width: 540px; }
+    .col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+}
+
+@media (min-width: 768px) {
+    .container { max-width: 720px; }
+}
+
+@media (min-width: 992px) {
+    .container { max-width: 960px; }
+    .col-lg-1  { flex: 0 0 8.333333%;  max-width: 8.333333%; }
+    .col-lg-3  { flex: 0 0 25%;        max-width: 25%; }
+    .col-lg-4  { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-lg-5  { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .col-lg-6  { flex: 0 0 50%;        max-width: 50%; }
+    .col-lg-7  { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .col-lg-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-lg-9  { flex: 0 0 75%;        max-width: 75%; }
+    .col-lg-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .col-lg-12 { flex: 0 0 100%;       max-width: 100%; }
+    .offset-lg-0 { margin-left: 0; }
+    .offset-lg-1 { margin-left: 8.333333%; }
+    .offset-lg-6 { margin-left: 50%; }
+}
+
+@media (min-width: 1200px) {
+    .container { max-width: 1140px; }
+    .col-xl-6  { flex: 0 0 50%;        max-width: 50%; }
+    .col-xl-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-xl-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.header {
+    width: 100%;
+    padding: 3.5rem 0;
+}
+
+.header-btnmenu {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.header-btnmenu label {
+    display: block;
+    cursor: pointer;
+}
+
+.header-btnmenu img {
+    width: 3.5rem;
+}
+
+/* ---------- Menu lateral (abre via checkbox, sem JavaScript) ---------- */
+
+.menu-toggle:focus-visible ~ .header .header-btnmenu label {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+}
+
+.header-menu-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease-in;
+}
+
+.header-menu-container .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    opacity: 0;
+    cursor: pointer;
+    transition: all 0.4s ease-in;
+}
+
+.header-menu {
+    background: var(--red);
+    position: absolute;
+    top: 0;
+    right: -100%;
+    width: 40rem;
+    height: 100%;
+    overflow-y: auto;
+    transition: all 0.4s ease-in;
+}
+
+.close-menu {
+    color: var(--white);
+    display: flex;
+    justify-content: flex-end;
+    padding: 2rem;
+}
+
+.close-menu label {
+    display: block;
+    cursor: pointer;
+}
+
+.close-menu svg {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+}
+
+.menu-toggle:checked ~ .header-menu-container {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.menu-toggle:checked ~ .header-menu-container .overlay {
+    opacity: 1;
+}
+
+.menu-toggle:checked ~ .header-menu-container .header-menu {
+    right: 0;
+}
+
+.header-menu li {
+    display: block;
+    padding: 0 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.header-menu a {
+    display: flex;
+    font-size: 1.8rem;
+    color: var(--white);
+    font-weight: 600;
+    line-height: 2.4rem;
+    text-transform: uppercase;
+    padding: 1.2rem 2rem;
+    transition: all .3s;
+}
+
+.header-menu a:hover,
+.header-menu a[aria-current="page"] {
+    background: rgba(255, 255, 255, .5);
+    color: var(--white);
+}
+
+/* ---------- Rodapé ---------- */
+
+.footer {
+    position: relative;
+}
+
+.footer-infos {
+    background: var(--blue);
+    display: flex;
+    justify-content: flex-end;
+    padding: 2rem 5rem 2rem 0;
+    position: relative;
+}
+
+.footer-infos::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    width: 100%;
+    background: var(--blue);
+}
+
+.footer-infos a {
+    display: flex;
+    font-size: 1.6rem;
+    line-height: 2.7rem;
+    color: var(--white);
+    align-items: center;
+}
+
+.footer-infos a:first-child {
+    margin-right: 5rem;
+}
+
+.footer-infos a img {
+    margin-right: 1rem;
+}
+
+.footer-dev span {
+    display: block;
+    font-size: 1.4rem;
+    color: var(--gray);
+}
+
+.footer-dev span a {
+    color: var(--gray);
+    font-weight: 600;
+}
+
+.whatsapp {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    background: #4dc247;
+    border-radius: 50%;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    z-index: 4;
+}
+
+.whatsapp a {
+    display: block;
+    line-height: 0;
+}
+
+.whatsapp svg {
+    fill: #FFF;
+    width: 41px;
+    height: 50px;
+}
+
+/* ---------- Home ---------- */
+
+.home {
+    background: url('../img/bg-home.jpg') center no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.home-info {
+    position: relative;
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+    margin-top: 1rem;
+    margin-bottom: 10rem;
+    padding-left: 7rem;
+}
+
+.bginfo {
+    background: var(--red);
+    mix-blend-mode: multiply;
+    opacity: 0.9;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.bginfo::after {
+    content: '';
+    right: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--red);
+    mix-blend-mode: multiply;
+    position: absolute;
+}
+
+.home-info h1 {
+    margin: 0 0 1rem 0;
+    font-family: var(--bebas);
+    font-size: 6rem;
+    line-height: 6rem;
+    color: var(--white);
+    font-weight: 400;
+}
+
+.home-info p {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    color: var(--white);
+    font-weight: 300;
+}
+
+/* ---------- Páginas internas ---------- */
+
+.page-main { margin-bottom: 6.3rem; }
+.page-main--quem { margin-bottom: 10.5rem; }
+.page-main--monitoramento { margin-bottom: 0; }
+
+.breadcrumb__item {
+    margin-bottom: 5rem;
+}
+
+.breadcrumb__item ul {
+    display: flex;
+    margin-left: 12rem;
+}
+
+.breadcrumb__item li {
+    margin: 0 2rem;
+}
+
+.breadcrumb__item a {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--gray);
+}
+
+.breadcrumb__item a svg {
+    width: 1.5rem;
+    color: var(--red);
+    margin: 0 0.7rem;
+}
+
+.page-title h1 {
+    margin: 0 2rem 0 0;
+    font-family: var(--bebas);
+    font-size: 6rem;
+    line-height: 5rem;
+    font-weight: 400;
+    color: var(--blue);
+    text-align: right;
+}
+
+.page-title h1::after {
+    content: '';
+    display: block;
+    width: 10rem;
+    height: 0.5rem;
+    background: var(--red);
+    margin: 2rem 0 0 auto;
+}
+
+.page-container .subtitle {
+    display: block;
+    font-size: 3.9rem;
+    line-height: 4.2rem;
+    color: var(--red);
+    font-weight: 200;
+    margin-bottom: 3rem;
+}
+
+.page-content p {
+    margin: 0 0 2.5rem 0;
+    color: var(--gray);
+    font-size: 1.6rem;
+    line-height: 3.1rem;
+    font-weight: 400;
+}
+
+.page-image {
+    position: relative;
+    min-height: 80rem;
+}
+
+.page-image img {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.page-image .setapage {
+    position: absolute;
+    right: -25.7rem;
+    bottom: 0;
+    top: auto;
+}
+
+.page-image--como img {
+    position: static;
+}
+
+.page-title--como h1 {
+    text-align: left;
+}
+
+.page-title--como h1::after {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.subtitle--monitoramento {
+    min-height: 12.5rem;
+    display: flex !important;
+    align-items: flex-end;
+    padding-bottom: 2.4rem;
+}
+
+.page-monitoramento--image img {
+    top: auto;
+    bottom: 0;
+    right: -110px;
+}
+
+/* ---------- Contato ---------- */
+
+.page-contato--title h1 {
+    text-align: left;
+    margin-bottom: 3rem;
+}
+
+.page-contato--title h1::after {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.page-contato--container .subtitle {
+    font-size: 3.5rem;
+    line-height: 4.4rem;
+    font-weight: 200;
+}
+
+.page-contato__infos a {
+    display: flex;
+    font-size: 2.3rem;
+    color: var(--red);
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.page-contato__infos a img {
+    margin-right: 1.7rem;
+    width: 3rem;
+}
+
+.page-contato__infos a.w img {
+    height: 2.8rem;
+}
+
+.page-contato--image {
+    min-height: 65rem;
+}
+
+.page-contato--image img {
+    max-height: 65rem;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 767px) {
+    .header-menu { width: 85%; }
+    .header-menu a { font-size: 1.6rem; }
+
+    .footer-infos { flex-direction: column; }
+
+    .footer-infos a {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        margin-right: 0 !important;
+    }
+
+    .footer-dev span {
+        text-align: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .home-info {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+        padding-left: 4rem;
+    }
+
+    .home-info h1 {
+        font-size: 5rem;
+        line-height: 5rem;
+    }
+
+    .home-info p {
+        font-size: 1.8rem;
+        line-height: 2.3rem;
+    }
+
+    .page-container .subtitle {
+        font-size: 2.7rem;
+        line-height: 3.1rem;
+        margin-top: 3rem;
+    }
+
+    .page-image { min-height: 1rem; }
+
+    .page-image img {
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 991px) {
+    .page-title h1 { text-align: center; }
+
+    .page-title h1::after {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .page-image .setapage,
+    .page-monitoramento--image,
+    .page-contato--image {
+        display: none;
+    }
+
+    .subtitle--monitoramento {
+        min-height: 1rem;
+        padding-bottom: 0;
+    }
+
+    .breadcrumb__item { margin-top: 3rem; }
+
+    .breadcrumb__item ul {
+        justify-content: space-between;
+        margin: 0;
+    }
+
+    .breadcrumb__item li { margin: 0; }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .page-container .subtitle { margin-top: 3rem; }
+
+    .page-image {
+        min-height: 1rem;
+        text-align: center;
+    }
+
+    .page-image img {
+        position: static;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 40rem;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .header-menu a { font-size: 1.4rem; }
+    .page-image .setapage { right: -20.7rem; }
+}
